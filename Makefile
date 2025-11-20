@@ -72,9 +72,9 @@ endif
 
 # Docker 相关变量
 DOCKER_IMAGE := headcni-plugin
-DOCKER_REGISTRY := binrc
-DOCKER_NAMESPACE := headcni-plugin
-DOCKER_TAG := $(VERSION)
+DOCKER_REGISTRY := docker.io
+DOCKER_NAMESPACE := binrc
+DOCKER_TAG := latest
 
 # 支持的架构
 SUPPORTED_ARCHS := linux/amd64 linux/arm64 linux/arm/v7 linux/arm/v8
@@ -212,11 +212,19 @@ docker-multiarch:
 		echo -e "$(RED)[ERROR]$(NC) 多架构构建脚本不存在"; \
 		exit 1; \
 	fi
+
+# 构建所有架构的 Docker 镜像推送
+.PHONY: docker-push-multiarch
+docker-push-multiarch:
+	@echo -e "$(BLUE)[DOCKER]$(NC) 构建所有架构的 Docker 镜像推送..."
+	docker buildx build  --platform linux/amd64,linux/arm64,linux/arm,linux/s390x,linux/ppc64le,linux/riscv64 -t $(DOCKER_REGISTRY)/$(DOCKER_NAMESPACE)/$(DOCKER_IMAGE):$(DOCKER_TAG) -f .docker/Dockerfile.flannel-style --build-arg TAG=$(DOCKER_TAG) --progress plain . --push
+
 # 构建特定架构的 Docker 镜像
 .PHONY: docker-build
 docker-build:
 	@echo -e "$(BLUE)[DOCKER]$(NC) 构建 Docker 镜像..."
 	@if [ -f "./scripts/build-multiarch.sh" ]; then \
+
 		chmod +x ./scripts/build-multiarch.sh; \
 		./scripts/build-multiarch.sh build; \
 	else \

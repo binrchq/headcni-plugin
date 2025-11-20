@@ -28,7 +28,7 @@ fi
 # 构建标签
 BUILDTAGS="netgo osusergo no_stage static_build"
 GO_BUILDTAGS="${GO_BUILDTAGS} ${BUILDTAGS} ${DEBUG_TAGS}"
-PKG="github.com/binrclab/headcni-plugin"
+PKG="binrc.com/headcni-plugin"
 
 # 版本标志
 VERSION_FLAGS="
@@ -84,7 +84,7 @@ elif [ "${GOOS}" = "darwin" ]; then
 else 
     echo "GOOS:${GOOS} is not yet supported"
     echo "Please file a new GitHub issue requesting support for GOOS:${GOOS}"
-    echo "https://github.com/binrclab/headcni-plugin/issues"
+    echo "https://binrc.com/headcni-plugin/issues"
     exit 1
 fi
 

@@ -65,7 +65,7 @@ LABEL org.opencontainers.image.title="HeadCNI Plugin"
 LABEL org.opencontainers.image.description="CNI Plugin binary for specific platform"
 LABEL org.opencontainers.image.version="1.0.0"
 LABEL org.opencontainers.image.vendor="binrc"
-LABEL org.opencontainers.image.source="https://github.com/binrc/headcni-plugin"
+LABEL org.opencontainers.image.source="https://github.com/binrchq/headcni-plugin"
 
 # Set working directory
 WORKDIR /app

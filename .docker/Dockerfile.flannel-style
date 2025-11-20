@@ -1,0 +1,70 @@
+ARG XX_IMAGE=tonistiigi/xx:1.6.1
+ARG GO_IMAGE=golang:alpine3.22
+ARG RUN_IMAGE=alpine:3.22.0
+
+FROM --platform=$BUILDPLATFORM ${XX_IMAGE} AS xx
+
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS base-builder
+# copy xx scripts to your build stage
+COPY --from=xx / /
+RUN apk add bash file make git clang lld patch linux-headers
+ARG TARGETPLATFORM
+RUN set -x && \
+    xx-apk --no-cache add gcc musl-dev 
+
+FROM --platform=$BUILDPLATFORM base-builder AS headcni-plugin-builder
+COPY Makefile go.mod go.sum *.go /build/
+COPY scripts /build/scripts
+COPY .docker /build/.docker
+WORKDIR /build
+RUN mkdir -p dist bin
+RUN go mod download
+
+ARG TARGETPLATFORM
+RUN xx-info env
+RUN export GOOS=$(xx-info os) &&\
+    export GOARCH=$(xx-info arch) &&\
+    export ARCH=$(xx-info arch) &&\
+    chmod +x /build/scripts/build_headcni.sh && \
+    /build/scripts/build_headcni.sh && \
+    cp /build/headcni-* /build/dist/
+
+FROM ${RUN_IMAGE}
+
+# Add metadata labels
+LABEL maintainer="binrc <support@binrc.com>"
+LABEL org.opencontainers.image.title="HeadCNI Plugin"
+LABEL org.opencontainers.image.description="CNI Plugin binary for specific platform"
+LABEL org.opencontainers.image.version="1.0.0"
+LABEL org.opencontainers.image.vendor="binrc"
+LABEL org.opencontainers.image.source="https://github.com/binrchq/headcni-plugin"
+
+# Set working directory
+WORKDIR /app
+
+# Define build arguments for platform
+ARG TARGETOS
+ARG TARGETARCH
+
+# Copy the binary from the builder stage
+COPY --from=headcni-plugin-builder /build/dist/headcni-* /app/
+
+# Verify the binary exists and show what we have
+RUN echo "Available binaries:" && ls -la /app/headcni* && \
+    if [ ! -f /app/headcni* ]; then \
+        echo "Error: No binary found for $TARGETOS-$TARGETARCH"; \
+        exit 1; \
+    fi
+
+# Copy the installation script
+COPY --from=headcni-plugin-builder /build/.docker/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /app/headcni* /entrypoint.sh && \
+    echo "Built for platform: $TARGETOS-$TARGETARCH" && ls -la /app/
+
+# 设置默认的复制目标目录（根据平台动态设置）
+ENV CNI_BIN_NAME="headcni"
+
+# Set the entrypoint and default command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["install"]

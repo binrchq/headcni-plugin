@@ -84,7 +84,7 @@ Create a CNI configuration file:
 
 ## Documentation
 
-Visit https://github.com/binrc/headcni-plugin for full documentation.
+Visit https://github.com/binrchq/headcni-plugin for full documentation.
 EOF
 
 # 为每个二进制文件创建包
