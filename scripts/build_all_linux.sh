@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+# build_all_linux.sh - Build HeadCNI plugin for all supported Linux architectures
+#
+# Usage: OUTPUT_DIR=dist ./scripts/build_all_linux.sh
+#
+# Environment Variables:
+#   OUTPUT_DIR   - Output directory (default: dist)
+#
+# Output: Multiple binaries in ${OUTPUT_DIR}/ for all Linux architectures
+# Architectures: 386, amd64, arm, arm64, s390x, ppc64le, riscv64
+#
 set -ex
 
 cd $(dirname $0)/..

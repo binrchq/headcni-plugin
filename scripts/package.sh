@@ -1,6 +1,22 @@
 #!/bin/bash
-# scripts/package.sh - 创建发布包脚本
-
+# package.sh - Create release packages from built binaries
+#
+# Usage: VERSION=1.0.0 ./scripts/package.sh
+#
+# Environment Variables:
+#   VERSION      - Release version (default: 1.0.0)
+#   PROGRAM      - Program name (default: headcni)
+#   RELEASE_DIR  - Output directory (default: release)
+#
+# Input: Expects binaries in dist/ directory
+# Output: Release packages in ${RELEASE_DIR}/
+#   - tar.gz archives for Unix platforms
+#   - zip archives for Windows
+#   - README.md in each package
+#   - checksums.sha256 file
+#
+# Called by: make release-script, GitHub Actions release workflow
+#
 set -e
 
 PROGRAM="headcni"

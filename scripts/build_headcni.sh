@@ -1,4 +1,20 @@
 #!/usr/bin/env bash
+# build_headcni.sh - Core build script for compiling HeadCNI plugin binaries
+#
+# Usage: GOOS=linux GOARCH=amd64 OUTPUT_DIR=dist ./scripts/build_headcni.sh
+#
+# Environment Variables:
+#   GOOS         - Target OS (linux, windows, darwin)
+#   GOARCH       - Target architecture (amd64, arm64, arm, 386, s390x, ppc64le, riscv64)
+#   OUTPUT_DIR   - Output directory (default: .)
+#   VERSION      - Version string (default: from git)
+#   COMMIT       - Commit hash (default: from git)
+#   BUILD_DATE   - Build timestamp (default: current UTC time)
+#   PROG         - Program name (default: headcni)
+#   GODEBUG      - Enable debug build (unset for release builds)
+#
+# Output: ${OUTPUT_DIR}/${PROG}-${GOOS}-${GOARCH}[.exe]
+#
 set -ex
 
 cd $(dirname $0)/..

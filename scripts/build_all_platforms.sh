@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
+# build_all_platforms.sh - Build HeadCNI plugin for all supported platforms
+#
+# Usage: OUTPUT_DIR=dist ./scripts/build_all_platforms.sh
+#
+# Environment Variables:
+#   OUTPUT_DIR   - Output directory (default: dist)
+#
+# Output: All platform binaries in ${OUTPUT_DIR}/
+#   - Linux: 7 architectures (via build_all_linux.sh)
+#   - Windows: amd64, arm64
+#   - macOS: amd64, arm64
+#
+# Called by: make build-all-script, GitHub Actions release workflow
+#
 set -ex
 
 cd $(dirname $0)/..

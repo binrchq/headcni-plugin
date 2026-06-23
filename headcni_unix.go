@@ -116,8 +116,7 @@ func doCmdAdd(args *skel.CmdArgs, n *NetConf, fenv *subnetEnv) error {
 	}
 
 	if !hasKey(n.Delegate, "mtu") {
-		mtu := fenv.mtu
-		n.Delegate["mtu"] = mtu
+		n.Delegate["mtu"] = *fenv.mtu // 解引用指针，传值而非地址
 	}
 
 	if n.Delegate["type"].(string) == "bridge" {
@@ -135,7 +134,6 @@ func doCmdAdd(args *skel.CmdArgs, n *NetConf, fenv *subnetEnv) error {
 		return fmt.Errorf("failed to assemble Delegate IPAM: %w", err)
 	}
 	n.Delegate["ipam"] = ipam
-	fmt.Fprintf(os.Stderr, "\n%#v\n", n.Delegate)
 
 	return delegateAdd(args.ContainerID, n.DataDir, n.Delegate)
 }

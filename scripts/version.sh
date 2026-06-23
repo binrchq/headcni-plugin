@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+# version.sh - Extract and export version information from git
+#
+# Usage: source ./scripts/version.sh
+#
+# Exports:
+#   VERSION    - Git tag or "dev" if no tag
+#   COMMIT     - Short commit hash or "dev" if not in git repo
+#   BUILD_DATE - Current UTC timestamp
+#
+# Called by: Other build scripts that need version info
+#
 
 # 获取版本信息
 VERSION=${VERSION:-$(git describe --tags --dirty --always 2>/dev/null || echo "dev")}

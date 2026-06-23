@@ -1,5 +1,6 @@
 # Binaries for programs and plugins
 headcni
+headcni-plugin
 *.exe
 *.exe~
 *.dll
@@ -48,4 +49,6 @@ Thumbs.db
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
+env-temp.yaml
+env-temp.full.yaml 
